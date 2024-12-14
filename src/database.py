@@ -1,5 +1,6 @@
 from sqlalchemy import create_async_engine
 from sqlalchemy.ext.asyncio import async_sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
 
 from config import Settings
 
@@ -13,3 +14,5 @@ session_local = async_sessionmaker(
     autoflush=True,
     expire_on_commit=False,
 )
+
+Base = declarative_base()
