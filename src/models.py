@@ -16,6 +16,8 @@ class Worker(Base):
     hashed_password: Mapped[str] = mapped_column()
     is_active: Mapped[bool] = mapped_column(default=True)
 
+    resumes: Mapped[list["Resume"]] = relationship("Resume", back_populates="worker")
+
 
 class Workload(Enum):
     fulltime = "fulltime"
@@ -30,5 +32,6 @@ class Resume(Base):
     description: Mapped[str] = mapped_column()
     salary: Mapped[int | None] = mapped_column()
     workload: Mapped[Workload]
-
     worker_id: Mapped[int] = mapped_column(ForeignKey("workers.id", ondelete="CASCADE"))
+
+    worker: Mapped["Worker"] = relationship("Worker", back_populates="resumes")
