@@ -16,6 +16,11 @@ class Worker(Base):
     is_active: Mapped[bool] = mapped_column(default=True)
 
 
+class Workload(Enum):
+    fulltime = "fulltime"
+    parttime = "parttime"
+
+
 class Resume(Base):
     __table_name__ = "resumes"
 
