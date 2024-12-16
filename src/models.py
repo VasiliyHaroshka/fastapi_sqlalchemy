@@ -1,7 +1,8 @@
+from datetime import datetime
 from enum import Enum
 
 from pydantic import EmailStr
-from sqlalchemy import ForeignKey, String
+from sqlalchemy import ForeignKey, String, text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from database import Base
@@ -16,7 +17,7 @@ class Worker(Base):
     hashed_password: Mapped[str] = mapped_column()
     is_active: Mapped[bool] = mapped_column(default=True)
 
-    resumes: Mapped[list["Resume"]] = relationship("Resume", back_populates="worker")
+    resumes: Mapped[list["Resume"]] = relationship(back_populates="workers", order_by="Resume.id")
 
 
 class Workload(Enum):
@@ -32,6 +33,8 @@ class Resume(Base):
     description: Mapped[str] = mapped_column()
     salary: Mapped[int | None] = mapped_column()
     workload: Mapped[Workload]
+    created_at: Mapped[datetime] = mapped_column(server_default=text("TIMEZONE('utc', now())"))
+    updated_at: Mapped[datetime] = mapped_column(server_default=text("TIMEZONE('utc', now())"), onupdate=datetime.now)
     worker_id: Mapped[int] = mapped_column(ForeignKey("workers.id", ondelete="CASCADE"))
 
-    worker: Mapped["Worker"] = relationship("Worker", back_populates="resumes")
+    worker: Mapped["Worker"] = relationship(back_populates="resumes")
