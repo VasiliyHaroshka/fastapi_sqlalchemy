@@ -1,7 +1,8 @@
 from enum import Enum
 
 from pydantic import EmailStr
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import ForeignKey, String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from database import Base
 
@@ -25,7 +26,9 @@ class Resume(Base):
     __table_name__ = "resumes"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    title: Mapped[str] = mapped_column(nullable=False, unique=True, index=True)
+    title: Mapped[str] = mapped_column(String(100), nullable=False, unique=True, index=True)
     description: Mapped[str] = mapped_column()
     salary: Mapped[int | None] = mapped_column()
     workload: Mapped[Workload]
+
+    worker_id: Mapped[int] = mapped_column(ForeignKey("workers.id", ondelete="CASCADE"))
