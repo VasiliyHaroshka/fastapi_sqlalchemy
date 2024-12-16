@@ -15,4 +15,6 @@ session_local = async_sessionmaker(
     expire_on_commit=False,
 )
 
-Base = declarative_base()
+
+class Base(declarative_base):
+    pass
