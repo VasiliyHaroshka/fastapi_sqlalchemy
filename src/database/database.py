@@ -9,7 +9,7 @@ engine = create_async_engine(
     echo=True,
 )
 
-session_local = async_sessionmaker(
+SessionLocal = async_sessionmaker(
     engine,
     autoflush=True,
     expire_on_commit=False,
