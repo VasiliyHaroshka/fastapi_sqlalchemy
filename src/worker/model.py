@@ -2,7 +2,7 @@ from pydantic import EmailStr
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from resume.model import Resume
-from database import Base
+from database.database import Base
 
 
 class Worker(Base):
