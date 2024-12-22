@@ -18,5 +18,5 @@ async def get_worker(name: WorkerGetSchema, db: Session = Depends(get_db)) -> Wo
 
 
 @router.get("/all")
-async def get_all_workers(db: Session = Depends(get_db)) -> list[Worker]:
-    return services.get_all_workers(db)
+async def get_all_workers(db: Session = Depends(get_db), limit: int, skip: int) -> list[Worker]:
+    return services.get_all_workers(db, limit, skip)
