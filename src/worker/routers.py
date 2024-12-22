@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from database.database import get_db
+from worker.model import Worker
 from worker import services
 from worker.schemas import WorkerGetSchema
-
 
 router = APIRouter(
     prefix="/worker",
@@ -13,5 +13,10 @@ router = APIRouter(
 
 
 @router.get("/{name}")
-async def get_worker(name: WorkerGetSchema, db: Session = Depends(get_db)):
+async def get_worker(name: WorkerGetSchema, db: Session = Depends(get_db)) -> Worker:
     return services.get_worker(name, db)
+
+
+@router.get("/all")
+async def get_all_workers(db: Session = Depends(get_db)) -> list[Worker]:
+    return services.get_all_workers(db)
