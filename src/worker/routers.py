@@ -13,10 +13,10 @@ router = APIRouter(
 
 
 @router.get("/{name}")
-async def get_worker(name: WorkerGetSchema, db: Session = Depends(get_db)) -> Worker:
+async def get_worker(name: WorkerGetSchema, db: Session = Depends(get_db)):
     return services.get_worker(name, db)
 
 
 @router.get("/all")
-async def get_all_workers(db: Session = Depends(get_db), limit: int, skip: int) -> list[Worker]:
+async def get_all_workers(db: Session = Depends(get_db), limit: int = 0, skip: int = 0):
     return services.get_all_workers(db, limit, skip)
