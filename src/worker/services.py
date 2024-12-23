@@ -25,3 +25,20 @@ async def get_all_workers(db: AsyncSession, limit: int, skip: int) -> list[Worke
             detail=f"There is no workers in database",
         )
     return workers
+
+
+async def create_worker(data, db: AsyncSession) -> Worker:
+    new_worker = Worker(
+        name=data["name"],
+        hashed_password=data["hashed_password"],
+        email=data["email"],
+    )
+    if not new_worker:
+        raise HTTPException(
+            status_code=409,
+            detail=f"Can't create new worker, try again",
+        )
+    db.add(new_worker)
+    await db.commit()
+    await db.refresh(new_worker)
+    return new_worker
