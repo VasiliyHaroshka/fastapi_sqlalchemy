@@ -19,3 +19,8 @@ async def get_worker(name: WorkerGetSchema, db: AsyncSession = Depends(get_db)):
 @router.get("/all")
 async def get_all_workers(db: AsyncSession = Depends(get_db), limit: int = 0, skip: int = 0):
     return services.get_all_workers(db, limit, skip)
+
+
+@router.post("/create")
+async def create_worker(data, db: AsyncSession = Depends(get_db))
+    return services.create_worker(data, db)

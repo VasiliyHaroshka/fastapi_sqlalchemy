@@ -19,7 +19,7 @@ class Base(declarative_base):
     pass
 
 
-def get_db():
+def get_db() -> SessionLocal:
     db = SessionLocal()
     try:
         yield db
