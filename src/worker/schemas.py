@@ -5,3 +5,8 @@ class BaseSchema(BaseModel):
 
 class WorkerGetSchema(BaseSchema):
     name: str
+
+class WorkerCreateSchema(WorkerGetSchema):
+    name: str
+    email: str
+    hashed_password: str
