@@ -1,5 +1,8 @@
+from http import HTTPStatus
+
+from alembic.util import status
 from fastapi import HTTPException
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from worker.model import Worker
@@ -42,3 +45,19 @@ async def create_worker(data, db: AsyncSession) -> Worker:
     await db.commit()
     await db.refresh(new_worker)
     return new_worker
+
+
+async def update_worker(data, db: AsyncSession) -> Worker | dict:
+    try:
+        worker = get_worker(data.name, db)
+        if worker:
+            worker.name = data.name
+            worker.email = data.email
+            worker.hashed_password = data.hashed_password
+            db.add(worker)
+            await db.commit()
+            await db.refresh(worker)
+            return worker
+    except HTTPException:
+        return {409: "can't update worker"}
+
