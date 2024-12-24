@@ -1,5 +1,6 @@
-from fastapi import APIRouter, Depends
-from sqlalchemy.orm.sync import update
+from zoneinfo import reset_tzpath
+
+from fastapi import APIRouter, Depends, HTTPException
 
 import services
 from database.database import get_db, SessionLocal
@@ -34,3 +35,17 @@ async def create_worker(
         db: SessionLocal = Depends(get_db),
 ):
     return services.create_worker(data, db)
+
+
+@router.patch("/update")
+async def update_worker(
+        data: WorkerCreateSchema,
+        db: SessionLocal = Depends(get_db),
+    ):
+    worker = services.get_worker(name=data.name, db=db)
+    if not worker:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Worker with name = {data.name} is not found",
+        )
+    return services.update_worker(data, db)
