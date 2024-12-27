@@ -1,10 +1,10 @@
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import DeclarativeBase
 
-from config import Settings
+from config import settings
 
 engine = create_async_engine(
-    url=Settings.db_url,
+    url=settings.db_url,
     echo=True,
 )
 
@@ -15,7 +15,7 @@ SessionLocal = async_sessionmaker(
 )
 
 
-class Base(declarative_base):
+class Base(DeclarativeBase):
     pass
 
 
