@@ -5,7 +5,6 @@ from sqlalchemy import ForeignKey, String, text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from database.database import Base
-from worker.model import Worker
 
 
 class Workload(Enum):
@@ -14,7 +13,7 @@ class Workload(Enum):
 
 
 class Resume(Base):
-    __table_name__ = "resumes"
+    __tablename__ = "resumes"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     title: Mapped[str] = mapped_column(String(100), nullable=False, unique=True, index=True)
