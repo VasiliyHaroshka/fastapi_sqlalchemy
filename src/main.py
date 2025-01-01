@@ -6,7 +6,7 @@ app = FastAPI()
 
 app.include_router(worker_router)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import uvicorn
 
     uvicorn.run(
