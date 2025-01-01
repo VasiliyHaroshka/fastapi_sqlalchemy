@@ -1,8 +1,5 @@
-from http import HTTPStatus
-
-from alembic.util import status
 from fastapi import HTTPException
-from sqlalchemy import select, update
+from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from worker.model import Worker
@@ -59,5 +56,15 @@ async def update_worker(data, db: AsyncSession) -> Worker | dict:
             await db.refresh(worker)
             return worker
     except HTTPException:
-        return {409: "can't update worker"}
+        return {"error": "can't update worker"}
 
+
+async def delete_worker(name: str, db: AsyncSession):
+    query = delete(Worker).filter(Worker.name == name)
+    worker = await db.execute(query)
+    if not worker:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Worker with name = {name} is not found",
+        )
+    return worker
