@@ -2,19 +2,17 @@ from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from error import Missing
 from worker.model import Worker
 from worker.schemas import WorkerCreateSchema
 
 
 async def get_worker(name: str, db: AsyncSession) -> Worker:
     query = select(Worker).filter(Worker.name == name)
-    worker = await db.execute(query).scalars().one()
-    if not worker:
-        raise HTTPException(
-            status_code=404,
-            detail=f"Worker with name = {name} is not found",
-        )
-    return worker
+    result = await db.execute(query)
+    if not result:
+        raise Missing(msg=f"Worker with name = {name} is not found")
+    return result.scalars().one()
 
 
 async def get_all_workers(db: AsyncSession, limit: int, skip: int) -> list[Worker]:
@@ -28,7 +26,7 @@ async def get_all_workers(db: AsyncSession, limit: int, skip: int) -> list[Worke
     return workers
 
 
-async def create_worker(data, db: AsyncSession) -> Worker:
+async def create_worker(data: WorkerCreateSchema, db: AsyncSession) -> Worker:
     new_worker = Worker(
         name=data["name"],
         hashed_password=data["hashed_password"],
