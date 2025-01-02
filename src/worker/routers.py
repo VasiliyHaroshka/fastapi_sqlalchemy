@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 
 from database.database import get_db, SessionLocal
+from error import Missing
 from worker import services
 from worker.schemas import WorkerGetSchema, WorkerCreateSchema
 
@@ -15,7 +16,10 @@ async def get_worker(
         name: WorkerGetSchema,
         db: SessionLocal = Depends(get_db),
 ):
-    return services.get_worker(name, db)
+    try:
+        await services.get_worker(name, db)
+    except Missing as e:
+        raise HTTPException(status_code=404, detail=e.msg)
 
 
 @router.get("/all")
@@ -47,6 +51,5 @@ async def update_worker(
 def delete_worker(
         name: WorkerGetSchema,
         db: SessionLocal = Depends(get_db),
-    ):
+):
     return services.delete_worker(name, db)
-
