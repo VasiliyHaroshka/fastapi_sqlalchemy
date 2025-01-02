@@ -1,8 +1,9 @@
 from fastapi import HTTPException
-from sqlalchemy import select, delete
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from worker.model import Worker
+from worker.schemas import WorkerCreateSchema
 
 
 async def get_worker(name: str, db: AsyncSession) -> Worker:
@@ -44,19 +45,21 @@ async def create_worker(data, db: AsyncSession) -> Worker:
     return new_worker
 
 
-async def update_worker(data, db: AsyncSession) -> Worker | dict:
-    try:
-        worker = get_worker(data.name, db)
-        if worker:
-            worker.name = data.name
-            worker.email = data.email
-            worker.hashed_password = data.hashed_password
-            db.add(worker)
-            await db.commit()
-            await db.refresh(worker)
-            return worker
-    except HTTPException:
-        return {"error": "can't update worker"}
+async def update_worker(data: WorkerCreateSchema, db: AsyncSession) -> Worker | dict:
+    worker = get_worker(data.name, db)
+    if not worker:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Worker with name = {data.name} is not found",
+        )
+    worker.name = data.name
+    worker.email = data.email
+    worker.hashed_password = data.hashed_password
+    db.add(worker)
+    await db.commit()
+    await db.refresh(worker)
+    return worker
+
 
 
 async def delete_worker(name: str, db: AsyncSession):
