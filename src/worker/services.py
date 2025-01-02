@@ -60,11 +60,12 @@ async def update_worker(data, db: AsyncSession) -> Worker | dict:
 
 
 async def delete_worker(name: str, db: AsyncSession):
-    query = delete(Worker).filter(Worker.name == name)
-    worker = await db.execute(query)
+    worker = await get_worker(name, db)
     if not worker:
         raise HTTPException(
             status_code=404,
             detail=f"Worker with name = {name} is not found",
         )
+    await db.delete(worker)
+    await db.commit()
     return worker
