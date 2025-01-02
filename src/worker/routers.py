@@ -28,7 +28,10 @@ async def get_all_workers(
         limit: int = 0,
         skip: int = 0,
 ):
-    return services.get_all_workers(db, limit, skip)
+    try:
+        await services.get_all_workers(db, limit, skip)
+    except Missing as e:
+        raise HTTPException(status_code=404, detail=e.msg)
 
 
 @router.post("/create")
