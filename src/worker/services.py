@@ -17,13 +17,12 @@ async def get_worker(name: str, db: AsyncSession) -> Worker:
 
 async def get_all_workers(db: AsyncSession, limit: int, skip: int) -> list[Worker]:
     query = select(Worker).offset(skip).limit(limit)
-    workers = await db.execute(query).scalars().all()
-    if not workers:
-        raise HTTPException(
-            status_code=404,
-            detail=f"There is no workers in database",
+    result = await db.execute(query)
+    if not result:
+        raise Missing(
+            msg=f"There is no workers in database",
         )
-    return workers
+    return [worker for worker in result.scalars().all()]
 
 
 async def create_worker(data: WorkerCreateSchema, db: AsyncSession) -> Worker:
