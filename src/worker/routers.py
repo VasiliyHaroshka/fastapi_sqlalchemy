@@ -15,7 +15,7 @@ router = APIRouter(
 async def get_worker(
         name: WorkerGetSchema,
         db: SessionLocal = Depends(get_db),
-):
+    ):
     try:
         await services.get_worker(name, db)
     except Missing as e:
@@ -27,7 +27,7 @@ async def get_all_workers(
         db: SessionLocal = Depends(get_db),
         limit: int = 0,
         skip: int = 0,
-):
+    ):
     try:
         await services.get_all_workers(db, limit, skip)
     except Missing as e:
@@ -38,7 +38,7 @@ async def get_all_workers(
 async def create_worker(
         data: WorkerCreateSchema,
         db: SessionLocal = Depends(get_db),
-):
+    ):
     return services.create_worker(data, db)
 
 
@@ -46,7 +46,7 @@ async def create_worker(
 async def update_worker(
         data: WorkerCreateSchema,
         db: SessionLocal = Depends(get_db),
-):
+    ):
     return services.update_worker(data, db)
 
 
@@ -54,5 +54,8 @@ async def update_worker(
 def delete_worker(
         name: WorkerGetSchema,
         db: SessionLocal = Depends(get_db),
-):
-    return services.delete_worker(name, db)
+    ):
+    try:
+        services.delete_worker(name, db)
+    except Missing as e:
+        return HTTPException(status_code=404, detail=e.msg)
