@@ -1,5 +1,5 @@
 from fastapi import HTTPException
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from error import Missing
@@ -43,20 +43,19 @@ async def create_worker(data: WorkerCreateSchema, db: AsyncSession) -> Worker:
 
 
 async def update_worker(data: WorkerCreateSchema, db: AsyncSession) -> Worker:
-    worker = get_worker(data.name, db)
-    if not worker:
-        raise HTTPException(
-            status_code=404,
-            detail=f"Worker with name = {data.name} is not found",
+    stmt = (
+        update(Worker)
+        .filter(Worker.name == data.name)
+        .values(
+            name=data.name,
+            email=data.email,
+            hashed_password=data.hashed_password,
         )
-    worker.name = data.name
-    worker.email = data.email
-    worker.hashed_password = data.hashed_password
-    db.add(worker)
+    )
+    db.add(stmt)
     await db.commit()
-    await db.refresh(worker)
+    worker = get_worker(data.name, db)
     return worker
-
 
 
 async def delete_worker(name: str, db: AsyncSession):
