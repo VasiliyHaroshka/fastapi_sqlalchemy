@@ -42,7 +42,7 @@ async def create_worker(data: WorkerCreateSchema, db: AsyncSession) -> Worker:
     return new_worker
 
 
-async def update_worker(data: WorkerCreateSchema, db: AsyncSession) -> Worker | dict:
+async def update_worker(data: WorkerCreateSchema, db: AsyncSession) -> Worker:
     worker = get_worker(data.name, db)
     if not worker:
         raise HTTPException(
@@ -62,10 +62,7 @@ async def update_worker(data: WorkerCreateSchema, db: AsyncSession) -> Worker | 
 async def delete_worker(name: str, db: AsyncSession):
     worker = await get_worker(name, db)
     if not worker:
-        raise HTTPException(
-            status_code=404,
-            detail=f"Worker with name = {name} is not found",
-        )
+        raise Missing(msg=f"Worker with name = {name} is not found")
     await db.delete(worker)
     await db.commit()
     return worker
