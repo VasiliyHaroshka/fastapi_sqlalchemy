@@ -47,15 +47,18 @@ async def update_worker(
         data: WorkerCreateSchema,
         db: SessionLocal = Depends(get_db),
     ):
-    return services.update_worker(data, db)
+    try:
+        await services.update_worker(data, db)
+    except Missing as e:
+        return HTTPException(status_code=404, detail=e.msg)
 
 
 @router.delete("/{name}")
-def delete_worker(
+async def delete_worker(
         name: WorkerGetSchema,
         db: SessionLocal = Depends(get_db),
     ):
     try:
-        services.delete_worker(name, db)
+        await services.delete_worker(name, db)
     except Missing as e:
         return HTTPException(status_code=404, detail=e.msg)
