@@ -15,8 +15,14 @@ async def get_all_resumes(db: AsyncSession, limit: int, skip: int) -> list[Resum
     return [resume for resume in result.scalars().all()]
 
 
-async def get_resumes_by_title(title: str, db: AsyncSession) -> list[Resume]:
-    query = select(Resume).filter_by(title=title)
+async def get_resumes_by_title(
+        title: str,
+        db: AsyncSession,
+        limit,
+        skip,
+) -> list[Resume]:
+
+    query = select(Resume).filter_by(title=title).offset(skip).limit(limit)
     result = await db.execute(query)
     if not result:
         raise Missing(

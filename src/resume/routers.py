@@ -25,8 +25,13 @@ async def get_all_resumes(
 
 
 @router.get("/{title}")
-async def get_resume_by_title(title: str) -> Resume:
+async def get_resumes_by_title(
+        title: str,
+        db: SessionLocal = Depends(get_db),
+        limit: int = 0,
+        skip: int = 0,
+):
     try:
-        return await services.get_resume_by_title(title)
+        return await services.get_resumes_by_title(title, db, limit, skip)
     except Missing as e:
         raise HTTPException(status_code=404, detail=e.msg)
