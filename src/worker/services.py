@@ -54,7 +54,7 @@ async def update_worker(data: WorkerCreateSchema, db: AsyncSession) -> Worker:
     )
     db.add(stmt)
     await db.commit()
-    worker = get_worker(data.name, db)
+    worker = await get_worker(data.name, db)
     return worker
 
 

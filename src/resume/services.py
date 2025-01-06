@@ -3,6 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from error import Missing
 from resume.model import Resume
+from resume.schemas import GetResumesByName
 
 
 async def get_all_resumes(db: AsyncSession, limit: int, skip: int) -> list[Resume]:
@@ -16,7 +17,7 @@ async def get_all_resumes(db: AsyncSession, limit: int, skip: int) -> list[Resum
 
 
 async def get_resumes_by_title(
-        title: str,
+        title: GetResumesByName,
         db: AsyncSession,
         limit,
         skip,

@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.util import await_only
 
 from database.database import get_db, SessionLocal
 from error import Missing
 from resume import services
 from resume.model import Resume
+from resume.schemas import GetResumesByName
 
 router = APIRouter(
     prefix="/resume",
@@ -26,7 +26,7 @@ async def get_all_resumes(
 
 @router.get("/{title}")
 async def get_resumes_by_title(
-        title: str,
+        title: GetResumesByName,
         db: SessionLocal = Depends(get_db),
         limit: int = 0,
         skip: int = 0,
