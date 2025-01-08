@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
 
 from database.database import get_db, SessionLocal
-from error import Missing
+from error import Missing, Duplicate
 from resume import services
 from resume.model import Resume
-from resume.schemas import GetResumesByName
+from resume.schemas import GetResumesByNameSchema, CreateResumeSchema
 
 router = APIRouter(
     prefix="/resume",
@@ -26,7 +26,7 @@ async def get_all_resumes(
 
 @router.get("/{title}")
 async def get_resumes_by_title(
-        title: GetResumesByName,
+        title: GetResumesByNameSchema,
         db: SessionLocal = Depends(get_db),
         limit: int = 0,
         skip: int = 0,
@@ -35,3 +35,14 @@ async def get_resumes_by_title(
         return await services.get_resumes_by_title(title, db, limit, skip)
     except Missing as e:
         raise HTTPException(status_code=404, detail=e.msg)
+
+
+@router.post("/create")
+async def create_resume(
+        data: CreateResumeSchema,
+        db: SessionLocal = Depends(get_db),
+):
+    try:
+        await services.create_resume(data, db)
+    except Duplicate as e:
+        return HTTPException(status_code=409, detail=e.msg)
