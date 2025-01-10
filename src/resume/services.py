@@ -44,6 +44,7 @@ async def create_resume(data: CreateResumeSchema, db: AsyncSession) -> Resume:
         raise Duplicate(msg="This resume already exists in database")
     db.add(new_resume)
     await db.commit()
+    await db.refresh(new_resume)
     query = select(Resume).filter_by(id=new_resume.id)
     result = await db.execute(query)
     return result.scalars().one()
