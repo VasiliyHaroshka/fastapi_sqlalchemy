@@ -11,3 +11,10 @@ class CreateResumeSchema(GetResumesByNameSchema):
     description: str
     salary: int | None
     workload: Workload
+
+
+class UpdateResumeSchema(BaseModel):
+    title: str | None
+    description: str | None
+    salary: int | None
+    workload: Workload | None
