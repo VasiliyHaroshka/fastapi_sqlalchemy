@@ -1,10 +1,9 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.util import await_only
 
 from error import Missing, Duplicate
 from resume.model import Resume
-from resume.schemas import GetResumesByNameSchema, CreateResumeSchema
+from resume.schemas import GetResumesByNameSchema, CreateResumeSchema, UpdateResumeSchema
 
 
 async def get_all_resumes(db: AsyncSession, limit: int, skip: int) -> list[Resume]:
@@ -20,8 +19,8 @@ async def get_all_resumes(db: AsyncSession, limit: int, skip: int) -> list[Resum
 async def get_resumes_by_title(
         title: GetResumesByNameSchema,
         db: AsyncSession,
-        limit,
-        skip,
+        limit: int = 1,
+        skip: int = 0,
 ) -> list[Resume]:
     query = select(Resume).filter_by(title=title).offset(skip).limit(limit)
     result = await db.execute(query)
@@ -46,5 +45,22 @@ async def create_resume(data: CreateResumeSchema, db: AsyncSession) -> Resume:
     await db.commit()
     await db.refresh(new_resume)
     query = select(Resume).filter_by(id=new_resume.id)
+    result = await db.execute(query)
+    return result.scalars().one()
+
+
+async def update_resume(
+        title: UpdateResumeSchema,
+        data: CreateResumeSchema,
+        db: AsyncSession,
+) -> Resume:
+    resume = await get_resumes_by_title(title, db)[0]
+    for key, value in data.items():
+        if value is not None:
+            resume.key = value
+    db.add(resume)
+    await db.commit()
+    await db.refresh(resume)
+    query = select(Resume).filter_by(id=resume.id)
     result = await db.execute(query)
     return result.scalars().one()
