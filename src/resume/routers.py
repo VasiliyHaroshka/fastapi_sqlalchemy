@@ -4,7 +4,7 @@ from database.database import get_db, SessionLocal
 from error import Missing, Duplicate
 from resume import services
 from resume.model import Resume
-from resume.schemas import GetResumesByNameSchema, CreateResumeSchema
+from resume.schemas import GetResumesByNameSchema, CreateResumeSchema, UpdateResumeSchema
 
 router = APIRouter(
     prefix="/resume",
@@ -46,3 +46,15 @@ async def create_resume(
         await services.create_resume(data, db)
     except Duplicate as e:
         return HTTPException(status_code=409, detail=e.msg)
+
+
+@router.patch("/{title}")
+async def update_resume(
+        title: GetResumesByNameSchema,
+        data: UpdateResumeSchema,
+        db: SessionLocal = Depends(get_db),
+):
+    try:
+        return await services.update_resume(title, data, db)
+    except Missing as e:
+        raise HTTPException(status_code=404, detail=e.msg)
