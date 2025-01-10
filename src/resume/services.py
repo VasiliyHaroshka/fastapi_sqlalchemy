@@ -6,6 +6,12 @@ from resume.model import Resume
 from resume.schemas import GetResumesByNameSchema, CreateResumeSchema, UpdateResumeSchema
 
 
+async def get_resume_by_id(id: int, db: AsyncSession) -> Resume:
+    query = select(Resume).filter_by(id)
+    result = await db.execute(query)
+    return result.scalars().one()
+
+
 async def get_all_resumes(db: AsyncSession, limit: int, skip: int) -> list[Resume]:
     query = select(Resume).offset(skip).limit(limit)
     result = await db.execute(query)
