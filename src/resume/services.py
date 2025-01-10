@@ -50,9 +50,7 @@ async def create_resume(data: CreateResumeSchema, db: AsyncSession) -> Resume:
     db.add(new_resume)
     await db.commit()
     await db.refresh(new_resume)
-    query = select(Resume).filter_by(id=new_resume.id)
-    result = await db.execute(query)
-    return result.scalars().one()
+    return await get_resume_by_id(new_resume.id, db)
 
 
 async def update_resume(
@@ -67,6 +65,4 @@ async def update_resume(
     db.add(resume)
     await db.commit()
     await db.refresh(resume)
-    query = select(Resume).filter_by(id=resume.id)
-    result = await db.execute(query)
-    return result.scalars().one()
+    return await get_resume_by_id(resume.id, db)
