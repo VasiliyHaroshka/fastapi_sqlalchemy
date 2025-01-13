@@ -58,3 +58,14 @@ async def update_resume(
         return await services.update_resume(title, data, db)
     except Missing as e:
         raise HTTPException(status_code=404, detail=e.msg)
+
+
+@router.delete("/{title}")
+async def delete_resume(
+        title: GetResumesByNameSchema,
+        db: SessionLocal = Depends(get_db),
+):
+    try:
+        return await services.delete_resume(title, db)
+    except Missing as e:
+        raise HTTPException(status_code=404, detail=e.msg)
