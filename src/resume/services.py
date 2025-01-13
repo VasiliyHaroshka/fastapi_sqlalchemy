@@ -64,7 +64,7 @@ async def update_resume(
         data: CreateResumeSchema,
         db: AsyncSession,
 ) -> Resume:
-    resume = await get_resumes_by_title(title, db)[0]
+    resume = await get_resume_by_title(title, db)
     for key, value in data.items():
         if value is not None:
             resume.key = value
@@ -78,7 +78,7 @@ async def delete_resume(
         title: GetResumesByNameSchema,
         db: AsyncSession,
 ) -> Resume:
-    resume_to_delete = await get_resumes_by_title(title, db)[0]
+    resume_to_delete = await get_resume_by_title(title, db)
     if resume_to_delete:
         await db.delete(resume_to_delete)
         return resume_to_delete
