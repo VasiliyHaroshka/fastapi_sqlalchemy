@@ -1,5 +1,6 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.util import await_only
 
 from error import Missing, Duplicate
 from resume.model import Resume
@@ -66,3 +67,16 @@ async def update_resume(
     await db.commit()
     await db.refresh(resume)
     return await get_resume_by_id(resume.id, db)
+
+
+async def delete_resume(
+        title: GetResumesByNameSchema,
+        db: AsyncSession,
+) -> Resume:
+    resume_to_delete = await get_resumes_by_title(title, db)[0]
+    if resume_to_delete:
+        await db.delete(resume_to_delete)
+        return resume_to_delete
+    raise Missing(
+        msg=f"There is no resume with title = {title} in database",
+    )
