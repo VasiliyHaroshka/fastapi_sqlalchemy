@@ -1,6 +1,7 @@
 from fastapi import HTTPException
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from error import Missing
 from worker.model import Worker
@@ -8,7 +9,7 @@ from worker.schemas import WorkerCreateSchema
 
 
 async def get_worker(name: str, db: AsyncSession) -> Worker:
-    query = select(Worker).filter(Worker.name == name)
+    query = select(Worker).filter(Worker.name == name).options(selectinload(Worker.resumes))
     result = await db.execute(query)
     if not result:
         raise Missing(msg=f"Worker with name = {name} is not found")
@@ -16,13 +17,13 @@ async def get_worker(name: str, db: AsyncSession) -> Worker:
 
 
 async def get_all_workers(db: AsyncSession, limit: int, skip: int) -> list[Worker]:
-    query = select(Worker).offset(skip).limit(limit)
+    query = select(Worker).offset(skip).limit(limit).options(selectinload(Worker.resumes))
     result = await db.execute(query)
     if not result:
         raise Missing(
             msg=f"There is no workers in database",
         )
-    return [worker for worker in result.scalars().all()]
+    return [worker for worker in result.unique().scalars().all()]
 
 
 async def create_worker(data: WorkerCreateSchema, db: AsyncSession) -> Worker:
