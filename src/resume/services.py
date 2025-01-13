@@ -1,6 +1,5 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.util import await_only
 
 from error import Missing, Duplicate
 from resume.model import Resume
@@ -8,7 +7,13 @@ from resume.schemas import GetResumesByNameSchema, CreateResumeSchema, UpdateRes
 
 
 async def get_resume_by_id(id: int, db: AsyncSession) -> Resume:
-    query = select(Resume).filter_by(id)
+    query = select(Resume).filter_by(id=id)
+    result = await db.execute(query)
+    return result.scalars().one()
+
+
+async def get_resume_by_title(title: GetResumesByNameSchema, db: AsyncSession) -> Resume:
+    query = select(Resume).filter_by(title=title)
     result = await db.execute(query)
     return result.scalars().one()
 
