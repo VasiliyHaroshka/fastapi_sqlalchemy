@@ -81,6 +81,7 @@ async def delete_resume(
     resume_to_delete = await get_resume_by_title(title, db)
     if resume_to_delete:
         await db.delete(resume_to_delete)
+        await db.commit()
         return resume_to_delete
     raise Missing(
         msg=f"There is no resume with title = {title} in database",
