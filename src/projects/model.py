@@ -1,4 +1,4 @@
-from sqlalchemy import String
+from sqlalchemy import String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 
 from database.database import Base
@@ -9,3 +9,9 @@ class Project(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     title: Mapped[str] = mapped_column(String(250))
 
+
+class WorkersProjects(Base):
+    __tablename__ = "workers_projects"
+
+    worker_id: Mapped[int] = mapped_column(ForeignKey("workers.id"), primary_key=True)
+    project_id: Mapped[int] = mapped_column(ForeignKey("projects.id"), primary_key=True)
