@@ -1,5 +1,6 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload
 
 from error import Missing, Duplicate
 from resume.model import Resume
@@ -19,7 +20,11 @@ async def get_resume_by_title(title: GetResumesByNameSchema, db: AsyncSession) -
 
 
 async def get_all_resumes(db: AsyncSession, limit: int, skip: int) -> list[Resume]:
-    query = select(Resume).offset(skip).limit(limit)
+    query = (select(Resume)
+             .offset(skip)
+             .limit(limit)
+             .options(joinedload(Resume.worker))
+             )
     result = await db.execute(query)
     if not result:
         raise Missing(
@@ -34,7 +39,12 @@ async def get_resumes_by_title(
         limit: int = 1,
         skip: int = 0,
 ) -> list[Resume]:
-    query = select(Resume).filter_by(title=title).offset(skip).limit(limit)
+    query = (select(Resume)
+             .filter_by(title=title)
+             .offset(skip)
+             .limit(limit)
+             .options(joinedload(Resume.worker))
+             )
     result = await db.execute(query)
     if not result:
         raise Missing(
