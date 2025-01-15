@@ -21,3 +21,8 @@ class Worker(Base):
         back_populates="workers",
         order_by="Resume.id",
     )
+
+    projects: Mapped[list["Project"]] = relationship(
+        back_populates="worker_in",
+        secondary="workers_projects",
+    )
