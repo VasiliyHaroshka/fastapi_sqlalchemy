@@ -13,7 +13,7 @@ class Worker(Base):
         unique=True,
         index=True,
     )
-    email: Mapped[EmailStr] = mapped_column(unique=True)
+    email: Mapped[str] = mapped_column(unique=True)
     hashed_password: Mapped[str] = mapped_column(unique=True)
     is_active: Mapped[bool] = mapped_column(default=True)
 

@@ -1,7 +1,7 @@
 from typing import Annotated
 
 from annotated_types import MaxLen, MinLen
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 
 
 class BaseSchema(BaseModel):
@@ -13,5 +13,5 @@ class WorkerGetSchema(BaseSchema):
 
 
 class WorkerCreateSchema(WorkerGetSchema):
-    email: EmailStr
+    email: str
     hashed_password: str
