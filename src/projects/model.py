@@ -19,5 +19,11 @@ class Project(Base):
 class WorkersProjects(Base):
     __tablename__ = "workers_projects"
 
-    worker_id: Mapped[int] = mapped_column(ForeignKey("workers.id"), primary_key=True)
-    project_id: Mapped[int] = mapped_column(ForeignKey("projects.id"), primary_key=True)
+    worker_id: Mapped[int] = mapped_column(
+        ForeignKey("workers.id"),
+        primary_key=True,
+    )
+    project_id: Mapped[int] = mapped_column(
+        ForeignKey("projects.id"),
+        primary_key=True,
+    )
