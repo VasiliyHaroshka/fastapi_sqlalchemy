@@ -13,7 +13,7 @@ async def get_resume_by_id(id: int, db: AsyncSession) -> Resume:
     return result.scalars().one()
 
 
-async def get_resume_by_title(title: GetResumesByNameSchema, db: AsyncSession) -> Resume:
+async def get_resume_by_title(title: str, db: AsyncSession) -> Resume:
     query = select(Resume).filter_by(title=title)
     result = await db.execute(query)
     return result.scalars().one()
@@ -85,7 +85,7 @@ async def update_resume(
 
 
 async def delete_resume(
-        title: GetResumesByNameSchema,
+        title: str,
         db: AsyncSession,
 ) -> Resume:
     resume_to_delete = await get_resume_by_title(title, db)

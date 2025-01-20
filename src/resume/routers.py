@@ -26,7 +26,7 @@ async def get_all_resumes(
 
 @router.get("/{title}")
 async def get_resumes_by_title(
-        title: GetResumesByNameSchema,
+        title: str,
         db: SessionLocal = Depends(get_db),
         limit: int = 0,
         skip: int = 0,
@@ -50,7 +50,7 @@ async def create_resume(
 
 @router.patch("/{title}")
 async def update_resume(
-        title: GetResumesByNameSchema,
+        title: str,
         data: UpdateResumeSchema,
         db: SessionLocal = Depends(get_db),
 ):
@@ -62,7 +62,7 @@ async def update_resume(
 
 @router.delete("/{title}")
 async def delete_resume(
-        title: GetResumesByNameSchema,
+        title: str,
         db: SessionLocal = Depends(get_db),
 ):
     try:

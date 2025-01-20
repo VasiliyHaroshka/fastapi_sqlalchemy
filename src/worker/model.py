@@ -1,4 +1,3 @@
-from pydantic import EmailStr
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from database.database import Base

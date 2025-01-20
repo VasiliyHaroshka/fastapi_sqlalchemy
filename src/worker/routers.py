@@ -13,7 +13,7 @@ router = APIRouter(
 
 @router.get("/{name}")
 async def get_worker(
-        name: WorkerGetSchema,
+        name: str,
         db: SessionLocal = Depends(get_db),
     ):
     try:
@@ -38,7 +38,7 @@ async def get_all_workers(
 async def create_worker(
         data: WorkerCreateSchema,
         db: SessionLocal = Depends(get_db),
-    ):
+):
     return services.create_worker(data, db)
 
 
@@ -46,7 +46,7 @@ async def create_worker(
 async def update_worker(
         data: WorkerCreateSchema,
         db: SessionLocal = Depends(get_db),
-    ):
+):
     try:
         await services.update_worker(data, db)
     except Missing as e:
@@ -55,9 +55,9 @@ async def update_worker(
 
 @router.delete("/{name}")
 async def delete_worker(
-        name: WorkerGetSchema,
+        name: str,
         db: SessionLocal = Depends(get_db),
-    ):
+):
     try:
         await services.delete_worker(name, db)
     except Missing as e:
