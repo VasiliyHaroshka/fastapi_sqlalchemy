@@ -15,3 +15,17 @@ def encode_jwt_token(
         algorithm=algorithm,
     )
     return encoded
+
+def decode_jwt_token(
+    token,
+    puclic_key,
+    algorithm,
+):
+    """Return decoded jwt token"""
+    decoded = jwt.decode(
+        token,
+        puclic_key,
+        algorithms=[algorithm],
+    )
+    return decoded
+
