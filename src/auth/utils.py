@@ -1,3 +1,4 @@
+import bcrypt
 import jwt
 
 from config import settings
@@ -29,3 +30,10 @@ def decode_jwt_token(
         algorithms=[algorithm],
     )
     return decoded
+
+
+def hash_password(password: str) -> bytes:
+    """User's password encryption"""
+    password_in_bytes: bytes = password.encode()
+    salt = bcrypt.gensalt()
+    return bcrypt.hashpw(password_in_bytes, salt)
