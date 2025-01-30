@@ -1,9 +1,12 @@
 from fastapi import FastAPI
 
+from database.database import Base, engine
 from worker.routers import router as worker_router
 from resume.routers import router as resume_router
 
 app = FastAPI()
+
+Base.metadata.create_all(bind=engine)
 
 app.include_router(worker_router)
 app.include_router(resume_router)
