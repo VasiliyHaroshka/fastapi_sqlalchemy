@@ -37,3 +37,11 @@ def hash_password(password: str) -> bytes:
     password_in_bytes: bytes = password.encode()
     salt = bcrypt.gensalt()
     return bcrypt.hashpw(password_in_bytes, salt)
+
+
+def check_password(
+        password: str,
+        hashed_password: bytes,
+) -> bool:
+    """Check weather matches user's password and hash password"""
+    return bcrypt.checkpw(password.encode(), hashed_password)
