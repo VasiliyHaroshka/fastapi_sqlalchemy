@@ -12,3 +12,4 @@ class User(Base):
     username: Mapped[str] = mapped_column(String(50))
     password: Mapped[str] = mapped_column()
     email: EmailStr
+    is_active: Mapped[bool] = True
