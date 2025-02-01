@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 import bcrypt
 import jwt
 
@@ -8,8 +10,17 @@ def encode_jwt_token(
         payload: dict,
         private_key: str = settings.jwt_auth.private_key_path.read_text(),
         algorithm: str = settings.jwt_auth.algorithm,
+        expire_minutes: int = settings.jwt_auth.access_token_expire_minutes,
+        expire_timedelta: timedelta | None = None
 ):
     """Return encoded jwt token"""
+    now = datetime.utcnow()
+    if expire_timedelta:
+        expire = now + expire_timedelta
+    else:
+        expire = now + timedelta(minutes=expire_minutes)
+    payload["exp"] = expire
+    payload["iat"] = now
     encoded = jwt.encode(
         payload=payload,
         key=private_key,
