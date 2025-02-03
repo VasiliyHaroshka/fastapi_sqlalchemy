@@ -6,7 +6,7 @@ def unauth_exception():
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="wrong username or password"
     )
-    return unauth_error
+    raise unauth_error
 
 
 def unactive_exception():
@@ -14,4 +14,4 @@ def unactive_exception():
         status_code=status.HTTP_403_FORBIDDEN,
         detail="user is not active"
     )
-    return unactive_error
+    raise unactive_error
