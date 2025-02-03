@@ -80,12 +80,10 @@ async def get_current_auth_user(
         payload: dict = Depends(get_payload_from_credentials),
         db: SessionLocal = Depends(get_db),
 ) -> UserSchema:
-    username: str = payload.get("sub")
-    query = select(User).filter_by(username=username)
+    user_id: int = payload.get("sub")
+    query = select(User).filter_by(id=user_id)
     result = await db.execute(query)
     user = result.scalars().one()
     if not user:
         raise Missing(msg=f"User with username = {user.username} is not found")
     return user
-
-
