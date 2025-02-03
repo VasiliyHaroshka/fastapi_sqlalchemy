@@ -1,8 +1,10 @@
 from datetime import datetime, timedelta
 
+from jwt.exceptions import InvalidTokenError
+
 import bcrypt
 import jwt
-from fastapi import Depends
+from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy import select
 
@@ -72,7 +74,13 @@ def get_payload_from_credentials(
         credentials: HTTPAuthorizationCredentials = Depends(http_bearer)
 ) -> UserSchema:
     token = credentials.credentials
-    payload = decode_jwt_token(token=token)
+    try:
+        payload = decode_jwt_token(token=token)
+    except InvalidTokenError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token",
+        )
     return payload
 
 
