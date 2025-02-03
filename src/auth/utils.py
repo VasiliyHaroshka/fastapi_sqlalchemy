@@ -4,9 +4,13 @@ import bcrypt
 import jwt
 from fastapi import Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from sqlalchemy import select
 
 from auth.error import unactive_exception
 from config import settings
+from database.database import SessionLocal, get_db
+from error import Missing
+from user.model import User
 from user.schemas import UserSchema
 
 http_bearer = HTTPBearer()  # получение токена из заголовка Authorization
@@ -70,4 +74,18 @@ def get_payload_from_credentials(
     token = credentials.credentials
     payload = decode_jwt_token(token=token)
     return payload
+
+
+async def get_current_auth_user(
+        payload: dict = Depends(get_payload_from_credentials),
+        db: SessionLocal = Depends(get_db),
+) -> UserSchema:
+    username: str = payload.get("sub")
+    query = select(User).filter_by(username=username)
+    result = await db.execute(query)
+    user = result.scalars().one()
+    if not user:
+        raise Missing(msg=f"User with username = {user.username} is not found")
+    return user
+
 
