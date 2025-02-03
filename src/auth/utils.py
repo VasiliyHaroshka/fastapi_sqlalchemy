@@ -3,13 +3,13 @@ from datetime import datetime, timedelta
 import bcrypt
 import jwt
 from fastapi import Depends
-from fastapi.security import HTTPBearer
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from auth.error import unactive_exception
 from config import settings
 from user.schemas import UserSchema
 
-http_bearer = HTTPBearer()
+http_bearer = HTTPBearer()  # получение токена из заголовка Authorization
 
 
 def encode_jwt_token(
@@ -64,4 +64,10 @@ def check_password(
     return bcrypt.checkpw(password.encode(), hashed_password)
 
 
+def get_payload_from_credentials(
+        credentials: HTTPAuthorizationCredentials = Depends(http_bearer)
+) -> UserSchema:
+    token = credentials.credentials
+    payload = decode_jwt_token(token=token)
+    return payload
 
