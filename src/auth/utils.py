@@ -2,8 +2,14 @@ from datetime import datetime, timedelta
 
 import bcrypt
 import jwt
+from fastapi import Depends
+from fastapi.security import HTTPBearer
 
+from auth.error import unactive_exception
 from config import settings
+from user.schemas import UserSchema
+
+http_bearer = HTTPBearer()
 
 
 def encode_jwt_token(
@@ -14,7 +20,7 @@ def encode_jwt_token(
         expire_timedelta: timedelta | None = None
 ):
     """Return encoded jwt token"""
-    now = datetime.utcnow()
+    now = datetime.now()
     if expire_timedelta:
         expire = now + expire_timedelta
     else:
@@ -56,3 +62,6 @@ def check_password(
 ) -> bool:
     """Check weather matches user's password and hash password"""
     return bcrypt.checkpw(password.encode(), hashed_password)
+
+
+
