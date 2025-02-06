@@ -5,7 +5,7 @@ from jwt.exceptions import InvalidTokenError
 import bcrypt
 import jwt
 from fastapi import Depends, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials, OAuth2PasswordBearer
+from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy import select
 
 from config import settings
@@ -14,7 +14,6 @@ from error import Missing
 from user.model import User
 from user.schemas import UserSchema
 
-# http_bearer = HTTPBearer()  # получение токена из заголовка Authorization
 oauth2 = OAuth2PasswordBearer(
     tokenUrl="auth/login/", # адрес для выпуска токена
 )
