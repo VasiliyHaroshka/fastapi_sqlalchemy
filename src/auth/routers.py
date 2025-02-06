@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 
 from auth import utils
 from auth.schema import TokenSchema
-from auth.utils import get_current_auth_user, get_payload_from_credentials
+from auth.utils import get_current_auth_user, get_current_token
 from auth.validators import user_validator
 from user.schemas import UserSchema
 
@@ -29,7 +29,7 @@ def login(user: UserSchema = Depends(user_validator)):
 @router.get("/me")
 def self_info(
         user: UserSchema = Depends(get_current_auth_user),
-        payload: dict = Depends(get_payload_from_credentials),
+        payload: dict = Depends(get_current_token),
 ):
     iat = payload.get("iat")
     return {

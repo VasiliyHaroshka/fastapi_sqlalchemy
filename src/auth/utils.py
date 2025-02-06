@@ -71,10 +71,9 @@ def check_password(
     return bcrypt.checkpw(password.encode(), hashed_password)
 
 
-def get_payload_from_credentials(
-        credentials: HTTPAuthorizationCredentials = Depends(http_bearer)
+def get_current_token(
+        token: str = Depends(oauth2),
 ) -> UserSchema:
-    token = credentials.credentials
     try:
         payload = decode_jwt_token(token=token)
     except InvalidTokenError:
@@ -86,7 +85,7 @@ def get_payload_from_credentials(
 
 
 async def get_current_auth_user(
-        payload: dict = Depends(get_payload_from_credentials),
+        payload: dict = Depends(get_current_token),
         db: SessionLocal = Depends(get_db),
 ) -> UserSchema:
     user_id: int = payload.get("sub")
