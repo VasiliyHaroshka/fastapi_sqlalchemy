@@ -2,7 +2,12 @@ from fastapi import APIRouter, Depends
 
 from auth import utils
 from auth.schema import TokenSchema
-from auth.utils import get_current_auth_user, get_current_token
+from auth.utils import (
+    get_current_auth_user,
+    get_current_token,
+    create_access_token,
+    create_refresh_token,
+)
 from auth.validators import user_validator
 from user.schemas import UserSchema
 
@@ -14,14 +19,11 @@ router = APIRouter(
 
 @router.post("/login/", response_model=TokenSchema)
 def login(user: UserSchema = Depends(user_validator)):
-    payload = {
-        "sub": user.id,
-        "username": user.username,
-        "email": user.email,
-    }
-    access_token = utils.encode_jwt_token(payload=payload)
+    access_token = create_access_token(user)
+    refresh_token = create_refresh_token(user)
     return TokenSchema(
         access_token=access_token,
+        refresh_token=refresh_token,
         token_type="Bearer",
     )
 
