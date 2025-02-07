@@ -97,10 +97,7 @@ async def get_current_auth_user(
     return user
 
 
-def create_access_token(user: UserSchema) -> str:
-    payload = {
-        "sub": user.id,
-        "username": user.username,
-        "email": user.email,
-    }
+def create_token(data: dict, token_type: str) -> str:
+    payload = {"token_type": token_type}
+    payload.update(data)
     return encode_jwt_token(payload=payload)
