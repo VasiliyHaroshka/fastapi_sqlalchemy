@@ -110,3 +110,10 @@ def create_access_token(user: UserSchema) -> str:
         "email": user.email,
     }
     return create_token(token_type="access", data=payload)
+
+
+def create_refresh_token(user: UserSchema) -> str:
+    payload = {
+        "sub": user.id,
+    }
+    return create_token(token_type="refresh", data=payload)
