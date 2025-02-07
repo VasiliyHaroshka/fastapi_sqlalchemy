@@ -15,8 +15,9 @@ from user.model import User
 from user.schemas import UserSchema
 
 oauth2 = OAuth2PasswordBearer(
-    tokenUrl="auth/login/", # адрес для выпуска токена
+    tokenUrl="auth/login/",  # адрес для выпуска токена
 )
+
 
 def encode_jwt_token(
         payload: dict,
@@ -94,3 +95,12 @@ async def get_current_auth_user(
     if not user:
         raise Missing(msg=f"User with username = {user.username} is not found")
     return user
+
+
+def create_access_token(user: UserSchema) -> str:
+    payload = {
+        "sub": user.id,
+        "username": user.username,
+        "email": user.email,
+    }
+    return encode_jwt_token(payload=payload)
