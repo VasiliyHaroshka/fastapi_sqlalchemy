@@ -5,7 +5,7 @@ from jwt.exceptions import InvalidTokenError
 import bcrypt
 import jwt
 from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import HTTPBearer, OAuth2PasswordBearer
 from sqlalchemy import select
 
 from config import settings
@@ -17,6 +17,7 @@ from user.schemas import UserSchema
 oauth2 = OAuth2PasswordBearer(
     tokenUrl="auth/login/",  # адрес для выпуска токена
 )
+http_bearer = HTTPBearer(auto_error=False)
 
 
 def encode_jwt_token(
