@@ -118,7 +118,11 @@ def create_access_token(user: UserSchema) -> str:
         "username": user.username,
         "email": user.email,
     }
-    return create_token(token_type="access", data=payload)
+    return create_token(
+        token_type="access",
+        data=payload,
+        expire_minutes=settings.jwt_auth.access_token_expire_minutes,
+    )
 
 
 def create_refresh_token(user: UserSchema) -> str:
