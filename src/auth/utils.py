@@ -97,10 +97,19 @@ async def get_current_auth_user(
     return user
 
 
-def create_token(data: dict, token_type: str) -> str:
+def create_token(
+        data: dict,
+        token_type: str,
+        expire_minutes: int = settings.jwt_auth.access_token_expire_minutes,
+        expire_timedelta: timedelta | None = None,
+) -> str:
     payload = {"token_type": token_type}
     payload.update(data)
-    return encode_jwt_token(payload=payload)
+    return encode_jwt_token(
+        payload=payload,
+        expire_minutes=expire_minutes,
+        expire_timedelta=expire_timedelta,
+    )
 
 
 def create_access_token(user: UserSchema) -> str:
