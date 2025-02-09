@@ -7,6 +7,7 @@ from auth.utils import (
     get_current_token,
     create_access_token,
     create_refresh_token,
+    http_bearer,
 )
 from auth.validators import user_validator
 from user.schemas import UserSchema
@@ -14,6 +15,7 @@ from user.schemas import UserSchema
 router = APIRouter(
     prefix="/auth",
     tags=["Auth"],
+    dependencies=[Depends(http_bearer)],
 )
 
 
