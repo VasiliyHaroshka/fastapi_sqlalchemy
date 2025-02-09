@@ -129,4 +129,8 @@ def create_refresh_token(user: UserSchema) -> str:
     payload = {
         "sub": user.id,
     }
-    return create_token(token_type="refresh", data=payload)
+    return create_token(
+        token_type="refresh",
+        data=payload,
+        expire_timedelta=timedelta(days=settings.jwt_auth.refresh_token_expire_days),
+    )
